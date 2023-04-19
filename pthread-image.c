@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include "pthread-image.h"
+#include <pthread.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
