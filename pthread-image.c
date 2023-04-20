@@ -84,8 +84,8 @@ void* convolve(void* thread_arg){
 	thread_args_t* args = (thread_args_t*)thread_arg; 
 	int start_row, end_row, span;
 	int local_ht = args->srcImage->height / thread_cnt;
-	start_row = (args->rank * local_height);
-	end_row = (args->rank + 1) * local_height - 1;
+	start_row = (args->rank * local_ht);
+	end_row = (args->rank + 1) * local_ht - 1;
 	for(int i = start_row; i < end_row; i++){
 		for(int j = 0; j < args->srcImage->width; j++){
 			for(int k = 0; k < args->srcImage->bpp; k++){
@@ -141,7 +141,6 @@ int main(int argc,char** argv){
     destImage.data=malloc(sizeof(uint8_t)*destImage.width*destImage.bpp*destImage.height);
     thread_hdls = (pthread_t*)malloc(thread_cnt * sizeof(pthread_t));
     thread_args_t thread_args[thread_cnt];
-    t1 = time(NULL);
     for(int thread = 0; thread < thread_cnt; thread++){
 	    thread_args[thread].srcImage = &srcImage;
 	    thread_args[thread].destImage = &destImage;
