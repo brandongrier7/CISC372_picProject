@@ -11,10 +11,13 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-int thread_cnt;
-Image srcImage;
-Image destImage;
-enum KernelTypes type;
+typedef struct{
+	Image * srcImage;
+	Image * destImage;
+	enum KernelTypes type;
+	int rank;
+}thread_args_t;
+int thread_cnt = 4;
 
 //An array of kernel matrices to be used for image convolution.  
 //The indexes of these match the enumeration from the header file. ie. algorithms[BLUR] returns the kernel corresponding to a box blur.
@@ -64,12 +67,6 @@ uint8_t getPixelValue(Image* srcImage,int x,int y,int bit,Matrix algorithm){
 //Returns: Nothing
 void convolute(Image* srcImage,Image* destImage,Matrix algorithm){
     int row,pix,bit,span;
-    long this_rank = (long)rank;
-    long min = 250*(long)rank;
-    long max = 250*((long)rank+1);
-    if(max > srcImage.height){
-      max = srcImage.height;
-    }
     span=srcImage->bpp*srcImage->bpp;
     for (row=0;row<srcImage->height;row++){
         for (pix=0;pix<srcImage->width;pix++){
@@ -78,6 +75,25 @@ void convolute(Image* srcImage,Image* destImage,Matrix algorithm){
             }
         }
     }
+}
+
+//convolute:  Thread function
+//Parameters: thread_arg: the thread argument
+//Returns: NUll
+void* convolve(void* thread_arg){
+	thread_args_t* args = (thread_args_t*)thread_arg; 
+	int start_row, end_row, span;
+	int local_ht = args->srcImage->height / thread_cnt;
+	start_row = (args->rank * local_height);
+	end_row = (args->rank + 1) * local_height - 1;
+	for(int i = start_row; i < end_row; i++){
+		for(int j = 0; j < args->srcImage->width; j++){
+			for(int k = 0; k < args->srcImage->bpp; k++){
+				args->destImage->data[Index(j, i, args->srcImage->width , k, args->srcImage->bpp)] = getPixelValue(args->srcImage, j, i, k, algorithms[args->type]);
+			}
+		}
+	}
+	return NULL;
 }
 
 //Usage: Prints usage information for the program
@@ -103,8 +119,8 @@ enum KernelTypes GetKernelType(char* type){
 //argv is expected to take 2 arguments.  First is the source file name (can be jpg, png, bmp, tga).  Second is the lower case name of the algorithm.
 int main(int argc,char** argv){
     long t1,t2;
+    pthread_t* thread_hdls;
     t1=time(NULL);
-
     stbi_set_flip_vertically_on_load(0); 
     if (argc!=3) return Usage();
     char* fileName=argv[1];
@@ -123,24 +139,25 @@ int main(int argc,char** argv){
     destImage.height=srcImage.height;
     destImage.width=srcImage.width;
     destImage.data=malloc(sizeof(uint8_t)*destImage.width*destImage.bpp*destImage.height);
-    long thread;
-    pthread_t* thread_hands;
-    thread_cnt = srcImage.height/250 + 1;
-    thread_hands =(pthread_t*)malloc(thread_cnt*sizeof(pthread_t));
-    ta = time(NULL); 
-    for (thread = 0; thread<thread_cnt; thread++){
-        pthread_create(&thread_hands[thread], NULL, &convolute, (void*)thread);
+    thread_hdls = (pthread_t*)malloc(thread_cnt * sizeof(pthread_t));
+    thread_args_t thread_args[thread_cnt];
+    t1 = time(NULL);
+    for(int thread = 0; thread < thread_cnt; thread++){
+	    thread_args[thread].srcImage = &srcImage;
+	    thread_args[thread].destImage = &destImage;
+        thread_args[thread].type = type;
+	    thread_args[thread].rank = thread;
+	    pthread_create(&thread_hdls[thread], NULL, &convolve, &thread_args[thread]);
     }
-    for(thread = 0; thread < thread_cnt; thread++){
-        pthread_join(thread_hands[thread], NULL);
+    for(int thread = 0; thread < thread_cnt; thread++){
+	    pthread_join(thread_hdls[thread], NULL);
     }
-    free(thread_hands);
-    tb = time(NULL); 
+    t2 = time(NULL);
     //convolute(&srcImage,&destImage,algorithms[type]);
     stbi_write_png("output.png",destImage.width,destImage.height,destImage.bpp,destImage.data,destImage.bpp*destImage.width);
     stbi_image_free(srcImage.data);
+    free(thread_hdls);
     free(destImage.data);
-    t2=time(NULL);
     printf("Took %ld seconds\n",t2-t1);
    return 0;
 }
