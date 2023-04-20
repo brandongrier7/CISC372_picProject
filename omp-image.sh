@@ -11,4 +11,3 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # Start my application
 srun ./omp-image
-srun ./pthread-image
