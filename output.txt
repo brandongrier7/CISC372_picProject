@@ -1,0 +1,33 @@
+Script started on Wed 19 Apr 2023 10:01:49 PM EDT
+]0;bgrier@login01.darwin:~/CISC372_picProject[?1034h[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ exitscript output.txt[9Pmake omppthr[1Pomp
+gcc -fopenmp -g omp-image.c -o omp-image -lm
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ make omp[4Pexitscript output.txt[9Pmake omppthr
+gcc -g pthread-image.c -o pthread-image -lm -pthread -std=c99
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ make pthr[1Pomp[4Pexitscript output.txt[9Pmake ompscript output.txtexit[Kmake omppthr[Ksbatch pthr[K[K[Kthr.sh[K[K[K-image.sh
+Submitted batch job 3985508
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ sbtach omp-image.sh
+bash: sbtach: command not found...
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ st[Kbatch omp-image.sh
+Submitted batch job 3985509
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ sbatch omp-image.shta[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Catch pthr-image.sh[1Ptach omp-image.shat[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kls
+image.c       output.txt                  [0m[38;5;13mpic4.jpg[0m
+image.h       output.txt-job_3985508.err  [38;5;34mpthread-image[0m
+makefile      output.txt-job_3985508.out  pthread-image.c
+[38;5;34momp-image[0m     output.txt-job_3985509.err  pthread-image.h
+omp-image.c   output.txt-job_3985509.out  pthr-image.sh
+omp-image.h   [38;5;13mpic1.jpg[0m                    README.md
+omp-image.sh  [38;5;13mpic2.jpg[0m                    stb_image.h
+[38;5;13moutput.png[0m    [38;5;13mpic3.jpg[0m                    stb_image_write.h
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ r[Ktail -f output.txt-job_ 3985508.err
+^C
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ tail -f output.txt-job_33985508.err[K[K[K[K[K[K[K[K[K[K[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K output.txt-job_ 3985508.out
+Took 0 seconds
+^C
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ tail 0[K-f output.txt-job_ 3985509.out
+Took 7 seconds
+^C
+]0;bgrier@login01.darwin:~/CISC372_picProject[(ea-cisc372:bgrier)@login01.darwin CISC372_picProject]$ exit
+exit
+
+Script done on Wed 19 Apr 2023 10:04:25 PM EDT
